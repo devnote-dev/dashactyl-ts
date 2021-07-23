@@ -1,0 +1,21 @@
+{
+  "name": "typedash",
+  "version": "1.0.0",
+  "description": "A flexible API wrapper for Dashactyl in TypeScript",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "dashactyl",
+    "pterodactyl-panel-api",
+    "pterodactyl-panel",
+    "pterodactyl"
+  ],
+  "author": "Devonte <https://github.com/devnote-dev>",
+  "repository": {
+    "type": "git",
+    "url": "github:devnote-dev/typedash"
+  },
+  "license": "MIT"
+}
