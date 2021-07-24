@@ -6,18 +6,19 @@ class DashUserServerManager {
     public user: DashUser;
     public cache: Map<string, DashServer>;
 
-    constructor(client: Dashactyl, user: DashUser, data: Array<object|DashUser>) {
+    constructor(client: Dashactyl, user: DashUser, data: object) {
         this.client = client;
         this.user = user;
         this.cache = new Map();
         this._patch(data);
     }
 
-    private _patch(data: Array<object|DashServer>) {
-        data.forEach(o => {
-            if (o instanceof DashServer) this.cache.set(o.uuid, o);
+    private _patch(data: object) {
+        data['relationships']['servers']['data']
+        .forEach(o => {
             const server = new DashServer(this.client, o);
             this.cache.set(server.uuid, server);
+            this.client.servers.cache.set(server.uuid, server);
         });
     }
 
@@ -29,8 +30,7 @@ class DashUserServerManager {
         return;
     }
 
-    public find(fn: Function): DashServer|null {
-        if (!fn) throw new Error();
+    public find(fn: (value: DashServer, key: string) => boolean): DashServer|null {
         for (const [key, val] of this.cache) {
             if (fn(val, key)) return val;
         }

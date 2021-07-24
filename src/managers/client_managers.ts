@@ -18,8 +18,8 @@ class DashUserManager {
             if (u) return u;
         }
 
-        const data = await this.client._request('GET', `/api/userinfo/${id}`);
-        if (data['status'] != 'success') throw new Error();
+        const data = await this.client._request('GET', `/api/userinfo?id=${id}`);
+        if (data['status'] != 'success') throw new Error(data['status']);
         const user = new DashUser(this.client, data);
         this.cache.set(user.uuid, user);
         return user;
@@ -33,7 +33,7 @@ class DashUserManager {
         return;
     }
 
-    public find(fn: Function): DashUser|null {
+    public find(fn: (value: DashUser, key: string) => boolean): DashUser|null {
         for (const [key, val] of this.cache) {
             if (fn(val, key)) return val;
         }
