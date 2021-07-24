@@ -7,7 +7,7 @@ import fetch from 'node-fetch';
 
 class Dashactyl {
     public domain: string;
-    public auth: string;
+    private auth: string;
 
     public users: DashUserManager;
     public servers: DashServerManager;
@@ -56,7 +56,7 @@ class Dashactyl {
         };
     }
 
-    async ping(): Promise<number> {
+    public async ping(): Promise<number> {
         const start = Date.now();
         await this._request('GET', '/api');
         return Date.now() - start;
