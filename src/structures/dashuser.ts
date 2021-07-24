@@ -1,5 +1,5 @@
 import { Dashactyl } from '..';
-import { DashUserServerManager } from '../managers';
+import { DashUserServerManager, CoinsManager } from '../managers';
 
 class DashUser {
     public client: Dashactyl;
@@ -21,29 +21,31 @@ class DashUser {
     public updatedTimestamp: number | null;
 
     public servers: DashUserServerManager;
+    public coins: CoinsManager;
 
     constructor(client: Dashactyl, data: object) {
-        if (typeof data !== 'object') throw new TypeError();
+        const att = data['userinfo']['attributes'];
 
         this.client = client;
-        this.id = data['id'];
-        this.uuid = data['uuid'];
-        this.isAdmin = data['root_admin'] || false;
+        this.id = att['id'];
+        this.uuid = att['uuid'];
+        this.isAdmin = att['root_admin'] || false;
         
-        this.username = data['username'];
-        this.email = data['email'];
-        this.firstname = data['first_name'];
-        this.lastname = data['last_name'];
+        this.username = att['username'];
+        this.email = att['email'];
+        this.firstname = att['first_name'];
+        this.lastname = att['last_name'];
         
-        this.language = data['language'];
-        this.tfa = data['2fa'];
+        this.language = att['language'];
+        this.tfa = att['2fa'];
         
-        this.createdAt = new Date(data['created_at']);
+        this.createdAt = new Date(att['created_at']);
         this.createdTimestamp = this.createdAt.getTime();
-        this.updatedAt = data['updated_at'] != null ? new Date(data['updated_at']) : null;
+        this.updatedAt = att['updated_at'] != null ? new Date(att['updated_at']) : null;
         this.updatedTimestamp = this.updatedAt ? this.updatedAt.getTime() : null;
 
-        this.servers = new DashUserServerManager(this.client, this, [data]);
+        this.servers = new DashUserServerManager(this.client, this, att);
+        this.coins = new CoinsManager(this.client, this, data);
     }
 
     get tag(): string {

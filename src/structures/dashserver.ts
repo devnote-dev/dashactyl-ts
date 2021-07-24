@@ -13,7 +13,7 @@ class DashServer {
     public isSuspended: boolean;
     public limits: object;
     public featureLimits: object;
-    public user: number;
+    public userid: number;
     public owner: DashUser | null;
 
     public node: number;
@@ -28,6 +28,7 @@ class DashServer {
     public updatedTimestamp: number | null;
 
     constructor(client: Dashactyl, data: object) {
+        data = data['attributes'];
         this.client = client;
         this.id = data['id'];
         this.uuid = data['uuid'];
@@ -39,7 +40,7 @@ class DashServer {
         this.isSuspended = data['suspended'];
         this.limits = data['limits'];
         this.featureLimits = data['feature_limits'];
-        this.user = data['user'];
+        this.userid = data['user'];
         this.owner = null;
 
         this.node = data['node'];
@@ -54,13 +55,19 @@ class DashServer {
         this.updatedTimestamp = this.updatedAt ? this.updatedAt.getTime() : null;
     }
 
-    public async getOwner(): Promise<DashUser|null> {
-        // TBC
-        return Promise.resolve(null);
+    public getOwner(): DashUser|null {
+        if (!this.owner) {
+            const u = this.client.users.find(u => u.id === this.id);
+            if (u) this.owner = u;
+        }
+        return this.owner;
     }
 
     public async delete(): Promise<void> {
-        if (!this.owner) await this.getOwner();
+        if (!this.owner) {
+            const u = this.getOwner();
+            if (!u) throw new Error('Server owner could not be resolved.');
+        }
         const res = await this.client._request('DELETE', `/api/deleteserver/${this.owner.id}/${this.id}`);
         if (res['status'] != 'success') throw new Error();
     }
