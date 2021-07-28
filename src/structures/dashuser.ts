@@ -49,7 +49,7 @@ class DashUser {
 
         this.createdAt = new Date(att['created_at']);
         this.createdTimestamp = this.createdAt.getTime();
-        this.updatedAt = att['updated_at'] != null ? new Date(att['updated_at']) : null;
+        this.updatedAt = att['updated_at'] !== null ? new Date(att['updated_at']) : null;
         this.updatedTimestamp = this.updatedAt ? this.updatedAt.getTime() : null;
 
         this.servers = new DashUserServerManager(this.client, this, att);
@@ -67,7 +67,7 @@ class DashUser {
      */
     async remove(): Promise<void> {
         const res = await this.client._request('POST', '/api/removeaccount', { id: this.username });
-        if (res['status'] != 'success') throw new Error(res['status']);
+        if (res['status'] !== 'success') throw new Error(res['status']);
         this.client.users.cache.delete(this.uuid);
     }
 }

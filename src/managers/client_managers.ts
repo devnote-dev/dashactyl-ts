@@ -25,14 +25,14 @@ class DashUserManager {
      * @returns {Promise<DashUser>}
      */
     public async fetch(id: string, check: boolean = true): Promise<DashUser> {
-        if (typeof id != 'string') throw new TypeError('User ID must be a string.');
+        if (typeof id !== 'string') throw new TypeError('User ID must be a string.');
         if (check) {
             const u = this.get(id);
             if (u) return u;
         }
 
         const data = await this.client._request('GET', `/api/userinfo?id=${id}`);
-        if (data['status'] != 'success') throw new Error(data['status']);
+        if (data['status'] !== 'success') throw new Error(data['status']);
 
         const user = new DashUser(this.client, data);
         this.cache.set(user.uuid, user);
@@ -45,7 +45,7 @@ class DashUserManager {
      * @returns {DashUser|null}
      */
     public get(id: string): DashUser|null {
-        if (typeof id != 'string') throw new TypeError('User ID must be a string.');
+        if (typeof id !== 'string') throw new TypeError('User ID must be a string.');
         for (const [key, val] of this.cache) if (key.includes(id)) return val;
         return null;
     }
@@ -56,7 +56,7 @@ class DashUserManager {
      * @returns {DashUser|null}
      */
     public find(fn: (value: DashUser, key: string) => boolean): DashUser|null {
-        if (typeof fn != 'function') throw new TypeError('Search parameter must be a function');
+        if (typeof fn !== 'function') throw new TypeError('Search parameter must be a function');
         for (const [key, val] of this.cache) if (fn(val, key)) return val;
         return null;
     }
@@ -67,10 +67,10 @@ class DashUserManager {
      * @returns {Promise<void>}
      */
     public async remove(user: string|DashUser): Promise<void> {
-        if (typeof user != 'string' && !(user instanceof DashUser)) throw new TypeError('User must be a string or DashUser object.');
+        if (typeof user !== 'string' && !(user instanceof DashUser)) throw new TypeError('User must be a string or DashUser object.');
         if (user instanceof DashUser) user = user.username;
         const res = await this.client._request('POST', '/api/removeaccount', { id: user });
-        if (res['status'] != 'success') throw new Error(res['status']);
+        if (res['status'] !== 'success') throw new Error(res['status']);
         this.cache.delete(user);
     }
 }
@@ -97,7 +97,7 @@ class DashServerManager {
      * @returns {DashServer|null}
      */
     public get(id: string): DashServer|null {
-        if (typeof id != 'string') throw new TypeError('User ID must be a string.');
+        if (typeof id !== 'string') throw new TypeError('User ID must be a string.');
         for (const [key, val] of this.cache) if (key.includes(id)) return val;
         return null;
     }
@@ -145,7 +145,7 @@ class CouponManager {
      * @returns {Coupon|null}
      */
     public get(code: string): Coupon|null {
-        if (typeof code != 'string') throw new TypeError('Code must be a string.');
+        if (typeof code !== 'string') throw new TypeError('Code must be a string.');
         for (const [key, val] of this.cache) if (key === code) return val;
         return null;
     }
@@ -179,7 +179,7 @@ class CouponManager {
             'POST', '/api/createcoupon',
             { code, coins, ram, disk, cpu, servers }
         );
-        if (data['status'] != 'success') throw new Error(data['status']);
+        if (data['status'] !== 'success') throw new Error(data['status']);
 
         const c = new Coupon(data);
         this.cache.set(c.code, c);
@@ -192,10 +192,10 @@ class CouponManager {
      * @returns {Promise<void>}
      */
     public async revoke(code: string|Coupon): Promise<void> {
-        if (typeof code != 'string' && !(code instanceof Coupon)) throw new TypeError('Code must be a string or Coupon object.');
+        if (typeof code !== 'string' && !(code instanceof Coupon)) throw new TypeError('Code must be a string or Coupon object.');
         if (code instanceof Coupon) code = code.code;
         const res = await this.client._request('POST', '/api/revokecoupon', { code });
-        if (res['status'] != 'success') throw new Error(res['status']);
+        if (res['status'] !== 'success') throw new Error(res['status']);
         if (this.cache.has(code)) this.cache.delete(code);
     }
 }

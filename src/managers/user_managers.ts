@@ -36,7 +36,7 @@ class DashUserServerManager {
      * @returns {DashServer|null}
      */
     public get(id: string): DashServer|null {
-        if (typeof id != 'string') throw new TypeError('Server ID must be a string.');
+        if (typeof id !== 'string') throw new TypeError('Server ID must be a string.');
         for (const [key, val] of this.cache) if (key.includes(id)) return val;
         return null;
     }
@@ -47,7 +47,7 @@ class DashUserServerManager {
      * @returns {DashServer|null}
      */
     public find(fn: (value: DashServer, key: string) => boolean): DashServer|null {
-        if (typeof fn != 'function') throw new TypeError('Search parameter must be a function');
+        if (typeof fn !== 'function') throw new TypeError('Search parameter must be a function');
         for (const [key, val] of this.cache) if (fn(val, key)) return val;
         return null;
     }
@@ -77,7 +77,7 @@ class CoinsManager {
         if (amount < 0 || amount > MAX_AMOUNT) throw new RangeError('Amount must be between 0 and 9 hundred-trillion.');
 
         const res = await this.client._request('POST', '/api/addcoins', { id: this.user.username, amount });
-        if (res['status'] != 'success') throw new Error(res['status']);
+        if (res['status'] !== 'success') throw new Error(res['status']);
 
         this.amount += amount;
         return this.amount;
@@ -96,7 +96,7 @@ class CoinsManager {
         if (amount < 0) amount = 0;
 
         const res = await this.client._request('POST', '/api/setcoins', { id: this.user.username, amount });
-        if (res['status'] != 'success') throw new Error();
+        if (res['status'] !== 'success') throw new Error();
 
         this.amount = amount;
         return this.amount;
@@ -112,7 +112,7 @@ class CoinsManager {
         if (amount < 0 || amount > MAX_AMOUNT) throw new RangeError('Amount must be between 0 and 9 hundred-trillion.');
 
         const res = await this.client._request('POST', '/api/setcoins', { id: this.user.username, amount });
-        if (res['status'] != 'success') throw new Error(res['status']);
+        if (res['status'] !== 'success') throw new Error(res['status']);
 
         this.amount = amount;
         return this.amount;
@@ -176,7 +176,7 @@ class ResourceManager {
             'POST', '/api/setresources',
             { id: this.user.username, ram, disk, cpu, servers }
         );
-        if (res['status'] != 'success') throw new Error(res['status']);
+        if (res['status'] !== 'success') throw new Error(res['status']);
 
         this.limits = { ram, disk, cpu, servers };
         return this.limits;
@@ -189,7 +189,7 @@ class ResourceManager {
      */
     public async setPlan(plan?: string): Promise<boolean> {
         const res = await this.client._request('POST', '/api/setplan', { id: this.user.username, package: plan ?? null });
-        if (res['status'] != 'success') throw new Error(res['status']);
+        if (res['status'] !== 'success') throw new Error(res['status']);
         return true;
     }
 }

@@ -54,7 +54,7 @@ class DashServer {
 
         this.createdAt = new Date(data['created_at']);
         this.createdTimestamp = this.createdAt.getTime();
-        this.updatedAt = data['updated_at'] != null ? new Date(data['updated_at']) : null;
+        this.updatedAt = data['updated_at'] !== null ? new Date(data['updated_at']) : null;
         this.updatedTimestamp = this.updatedAt ? this.updatedAt.getTime() : null;
     }
 

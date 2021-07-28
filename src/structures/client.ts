@@ -27,7 +27,7 @@ class Dashactyl {
         path: string,
         params?: object
     ): Promise<object> {
-        if (!['GET', 'POST', 'PATCH', 'DELETE'].includes(method)) throw new Error();
+        if (!['GET', 'POST', 'PATCH', 'DELETE'].includes(method)) throw new Error('Invalid Request Method.');
 
         path = this.domain + path;
         let body: string | null = null;
@@ -41,8 +41,9 @@ class Dashactyl {
             method,
             body,
             headers:{
+                'Authorization': this.auth,
                 'Content-Type': 'application/json',
-                'Authorization': this.auth
+                'Accept': 'application/json'
             }
         });
         if (res.ok) {
