@@ -2,7 +2,7 @@ import {
     DashUserManager,
     DashServerManager,
     CouponManager
-} from './managers';
+} from '../managers';
 import fetch from 'node-fetch';
 
 class Dashactyl {
