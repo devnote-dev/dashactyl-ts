@@ -1,6 +1,9 @@
 import { Dashactyl } from '..';
 import { DashUser } from './dashuser';
 
+/**
+ * Represents a Pterodactyl server.
+ */
 class DashServer {
     public client: Dashactyl;
     public id: number;
@@ -55,9 +58,14 @@ class DashServer {
         this.updatedTimestamp = this.updatedAt ? this.updatedAt.getTime() : null;
     }
 
+    /**
+     * Searches for the owner of the server in the client cache.
+     * Returns `null` if unavailable.
+     * @returns {DashUser|null}
+     */
     public getOwner(): DashUser|null {
         if (!this.owner) {
-            const u = this.client.users.find(u => u.id === this.id);
+            const u = this.client.users.find(u => u.id === this.userid);
             if (u) this.owner = u;
         }
         return this.owner;

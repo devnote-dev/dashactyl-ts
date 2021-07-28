@@ -18,7 +18,7 @@ class Dashactyl {
         this.auth = 'Bearer '+ auth;
 
         this.users = new DashUserManager(this);
-        this.servers = new DashServerManager(); // This is broken somehow
+        this.servers = new DashServerManager();
         this.coupons = new CouponManager(this);
     }
 
@@ -56,6 +56,10 @@ class Dashactyl {
         };
     }
 
+    /**
+     * Pings the Dashactyl API.
+     * @returns {Promise<number>}
+     */
     public async ping(): Promise<number> {
         const start = Date.now();
         await this._request('GET', '/api');
