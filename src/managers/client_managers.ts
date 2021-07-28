@@ -12,7 +12,7 @@ class DashUserManager {
     constructor(client: Dashactyl) {
         this.client = client;
         /**
-         * The internal cache for user servers.
+         * The internal cache for users.
          * @type {Map<string, DashUser>}
          */
         this.cache = new Map();
@@ -85,7 +85,7 @@ class DashServerManager {
 
     construtor() {
         /**
-         * The internal cache for user servers.
+         * The internal cache for all servers received by the client.
          * @type {Map<string, DashServer>}
          */
         this.cache = new Map();
@@ -123,7 +123,7 @@ class CouponManager {
     constructor(client: Dashactyl) {
         this.client = client;
         /**
-         * The internal cache for user servers.
+         * The internal cache for coupons.
          * @type {Map<string, Coupon>}
          */
         this.cache = new Map();
