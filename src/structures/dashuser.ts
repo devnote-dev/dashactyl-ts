@@ -1,6 +1,13 @@
 import { Dashactyl } from '..';
-import { DashUserServerManager, CoinsManager } from '../managers';
+import {
+    DashUserServerManager,
+    CoinsManager,
+    ResourceManager
+} from '../managers';
 
+/**
+ * Represents a Pterodactyl user.
+ */
 class DashUser {
     public client: Dashactyl;
     public id: number;
@@ -21,6 +28,7 @@ class DashUser {
     public updatedTimestamp: number | null;
 
     public servers: DashUserServerManager;
+    public resources: ResourceManager;
     public coins: CoinsManager;
 
     constructor(client: Dashactyl, data: object) {
@@ -45,6 +53,7 @@ class DashUser {
         this.updatedTimestamp = this.updatedAt ? this.updatedAt.getTime() : null;
 
         this.servers = new DashUserServerManager(this.client, this, att);
+        this.resources = new ResourceManager(this.client, this, data);
         this.coins = new CoinsManager(this.client, this, data);
     }
 
@@ -52,6 +61,10 @@ class DashUser {
         return this.firstname + this.lastname
     }
 
+    /**
+     * Removes (or deletes) the user's account.
+     * @returns {Promise<void>}
+     */
     async remove(): Promise<void> {
         const res = await this.client._request('POST', '/api/removeaccount', { id: this.username });
         if (res['status'] != 'success') throw new Error(res['status']);
