@@ -35,10 +35,10 @@ class DashUser {
         this.email = att['email'];
         this.firstname = att['first_name'];
         this.lastname = att['last_name'];
-        
+
         this.language = att['language'];
         this.tfa = att['2fa'];
-        
+
         this.createdAt = new Date(att['created_at']);
         this.createdTimestamp = this.createdAt.getTime();
         this.updatedAt = att['updated_at'] != null ? new Date(att['updated_at']) : null;
@@ -53,9 +53,9 @@ class DashUser {
     }
 
     async remove(): Promise<void> {
-        const res = await this.client._request('DELETE', `/api/removeaccount/${this.id}`);
-        if (res['status'] != 'success') throw new Error();
-        // TODO: also remove user from client cache
+        const res = await this.client._request('POST', '/api/removeaccount', { id: this.username });
+        if (res['status'] != 'success') throw new Error(res['status']);
+        this.client.users.cache.delete(this.uuid);
     }
 }
 
