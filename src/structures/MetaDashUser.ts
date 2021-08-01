@@ -8,7 +8,7 @@ import { Dashactyl, DashUser } from '..';
 class MetaDashUser {
     public client: Dashactyl;
     public id: number;
-    public uuid: number;
+    public uuid: string;
     public isAdmin: boolean;
 
     public username: string;
