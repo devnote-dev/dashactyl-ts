@@ -1,5 +1,10 @@
 import { Dashactyl } from '..';
-import { DashUser, DashServer, Coupon } from '../structures';
+import {
+    MetaDashUser,
+    DashUser,
+    DashServer,
+    Coupon
+} from '../structures';
 import { DashUserServerManager, MAX_AMOUNT } from '.';
 
 /**
@@ -7,28 +12,48 @@ import { DashUserServerManager, MAX_AMOUNT } from '.';
  */
 class DashUserManager {
     public client: Dashactyl;
-    public cache: Map<string, DashUser>;
+    public cache: Map<string, DashUser|MetaDashUser>;
 
     constructor(client: Dashactyl) {
         this.client = client;
         /**
          * The internal cache for users.
-         * @type {Map<string, DashUser>}
+         * @type {Map<string, DashUser|MetaDashUser>}
          */
         this.cache = new Map();
+    }
+
+    public async create(
+        username: string,
+        email: string,
+        firstname: string,
+        lastname: string,
+        password?: string
+    ): Promise<MetaDashUser> {
+        if (!username || !email || !firstname || !lastname) throw new Error('Username, email, firstname and lastname are required.');
+
+        const data = await this.client._request(
+            'POST', '/api/users',
+            { username, email, firstname, lastname, password }
+        );
+        if (data['status'] !== 'success') throw new Error(data['status']);
+
+        const meta = new MetaDashUser(this.client, data['data']);
+        this.cache.set(meta.uuid, meta);
+        return meta;
     }
 
     /**
      * Fetches a user from the API, with an optional check from the cache (default true).
      * @param {string} id The ID of the user.
      * @param {?boolean} check Whether to check the cache first before fetching.
-     * @returns {Promise<DashUser>}
+     * @returns {Promise<DashUser|MetaDashUser>}
      */
-    public async fetch(id: string, check: boolean = true): Promise<DashUser> {
+    public async fetch(id: string, check: boolean = true): Promise<DashUser|MetaDashUser> {
         if (typeof id !== 'string') throw new TypeError('User ID must be a string.');
         if (check) {
             const u = this.get(id);
-            if (u) return u;
+            if (u) return Promise.resolve(u);
         }
 
         const data = await this.client._request('GET', `/api/userinfo?id=${id}`);
@@ -42,9 +67,9 @@ class DashUserManager {
     /**
      * Gets a user from the cache, returns `null` if unavailable.
      * @param {string} id The ID of the user.
-     * @returns {DashUser|null}
+     * @returns {DashUser|MetaDashUser|null}
      */
-    public get(id: string): DashUser|null {
+    public get(id: string): DashUser|MetaDashUser|null {
         if (typeof id !== 'string') throw new TypeError('User ID must be a string.');
         for (const [key, val] of this.cache) if (key.includes(id)) return val;
         return null;
@@ -53,9 +78,9 @@ class DashUserManager {
     /**
      * Searches the cache and returns the first user that fufills the function.
      * @param {Function} fn The function to apply to the value.
-     * @returns {DashUser|null}
+     * @returns {DashUser|MetaDashUser|null}
      */
-    public find(fn: (value: DashUser, key: string) => boolean): DashUser|null {
+    public find(fn: (value: DashUser|MetaDashUser, key: string) => boolean): DashUser|MetaDashUser|null {
         if (typeof fn !== 'function') throw new TypeError('Search parameter must be a function');
         for (const [key, val] of this.cache) if (fn(val, key)) return val;
         return null;
@@ -69,7 +94,7 @@ class DashUserManager {
     public async remove(user: string|DashUser): Promise<void> {
         if (typeof user !== 'string' && !(user instanceof DashUser)) throw new TypeError('User must be a string or DashUser object.');
         if (user instanceof DashUser) user = user.username;
-        const res = await this.client._request('POST', '/api/removeaccount', { id: user });
+        const res = await this.client._request('DELETE', `/api/users/${user}`);
         if (res['status'] !== 'success') throw new Error(res['status']);
         this.cache.delete(user);
     }
@@ -176,7 +201,7 @@ class CouponManager {
         if (servers < 0 || servers > 10) throw new RangeError('Servers must be between 0 and 10.');
 
         const data = await this.client._request(
-            'POST', '/api/createcoupon',
+            'POST', '/api/coupons',
             { code, coins, ram, disk, cpu, servers }
         );
         if (data['status'] !== 'success') throw new Error(data['status']);
@@ -194,7 +219,7 @@ class CouponManager {
     public async revoke(code: string|Coupon): Promise<void> {
         if (typeof code !== 'string' && !(code instanceof Coupon)) throw new TypeError('Code must be a string or Coupon object.');
         if (code instanceof Coupon) code = code.code;
-        const res = await this.client._request('POST', '/api/revokecoupon', { code });
+        const res = await this.client._request('DELETE', `/api/coupons/${code}`);
         if (res['status'] !== 'success') throw new Error(res['status']);
         if (this.cache.has(code)) this.cache.delete(code);
     }
