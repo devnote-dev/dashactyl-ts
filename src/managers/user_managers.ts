@@ -74,7 +74,8 @@ class CoinsManager {
      * @returns {Promise<number>}
      */
     public async add(amount: number): Promise<number> {
-        if (amount < 0 || amount > MAX_AMOUNT) throw new RangeError('Amount must be between 0 and 9 hundred-trillion.');
+        if (amount < 0) throw new RangeError('Amount must be greater than 0');
+        if (amount > MAX_AMOUNT) amount = MAX_AMOUNT;
 
         const res = await this.client._request('PATCH', '/api/addcoins', { id: this.user.username, coins: amount });
         if (res['status'] !== 'success') throw new Error(res['status']);
@@ -90,8 +91,8 @@ class CoinsManager {
      * @returns {Promise<number>}
      */
     public async remove(amount: number): Promise<number> {
-        if (amount < 0 || amount > MAX_AMOUNT) throw new RangeError('Amount must be between 0 and 9 hundred-trillion.');
-
+        if (amount < 0) throw new RangeError('Amount must be greater than 0');
+        if (amount > MAX_AMOUNT) amount = MAX_AMOUNT;
         amount = this.amount - amount;
         if (amount < 0) amount = 0;
 
