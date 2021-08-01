@@ -158,7 +158,7 @@ class CouponManager {
      * Fetches a coupon by its code, or all existing coupons if no code is specified.
      * Returns `null` if there are no existing coupons.
      * @param {?string} code The code for the coupon.
-     * @returns {Promise<Coupon|Map<string, Coupon>|Map<string, Coupon>>}
+     * @returns {Promise<Coupon|Map<string, Coupon>>}
      */
     public async fetch(code?: string): Promise<Coupon|Map<string, Coupon>> {
         if (code) {
