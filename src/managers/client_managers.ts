@@ -56,7 +56,7 @@ class DashUserManager {
             if (u) return Promise.resolve(u);
         }
 
-        const data = await this.client._request('GET', `/api/userinfo?id=${id}`);
+        const data = await this.client._request('GET', `/api/users/${id}`);
         if (data['status'] !== 'success') throw new Error(data['status']);
 
         const user = new DashUser(this.client, data);
@@ -157,12 +157,31 @@ class CouponManager {
     /**
      * Fetches a coupon by its code, or all existing coupons if no code is specified.
      * Returns `null` if there are no existing coupons.
-     * TODO: will be implemented when the API is updated.
      * @param {?string} code The code for the coupon.
-     * @returns {Promise<Coupon|Map<string, Coupon>|null>}
-     * @private
+     * @returns {Promise<Coupon|Map<string, Coupon>|Map<string, Coupon>>}
      */
-    private async fetch(code?: string) /*: Promise<Coupon|null> */ {}
+    public async fetch(code?: string): Promise<Coupon|Map<string, Coupon>> {
+        if (code) {
+            if (this.cache.has(code)) return Promise.resolve(this.cache.get(code));
+
+            const data = await this.client._request('GET', `/api/coupons/${code}`);
+            if (data['status'] !== 'success') throw new Error(data['status']);
+
+            const coupon = new Coupon(data);
+            return coupon;
+        }
+
+        const data = await this.client._request('GET', '/api/coupons');
+        if (data['status'] !== 'success') throw new Error(data['status']);
+
+        const coupons: Map<string, Coupon> = new Map();
+        for (const o of data['coupons']) {
+            const c = new Coupon(o);
+            this.cache.set(c.code, c);
+            coupons.set(c.code, c);
+        }
+        return coupons;
+    }
 
     /**
      * Gets a coupon from the cache, returns `null` if unavailable.
