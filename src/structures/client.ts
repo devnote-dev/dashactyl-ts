@@ -22,6 +22,14 @@ class Dashactyl {
         this.coupons = new CouponManager(this);
     }
 
+    /**
+     * ### Not to be used publically.
+     * Sends a request to the Dashactyl API with the specified parameters.
+     * @param {string} method The request method.
+     * @param {string} path The API endpoint path.
+     * @param {object} params Any additional parameters (for `POST` and `PATCH` methods).
+     * @returns {Promise<object>}
+     */
     public async _request(
         method: 'GET'|'POST'|'PATCH'|'DELETE',
         path: string,
