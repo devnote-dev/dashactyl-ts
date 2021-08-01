@@ -76,7 +76,7 @@ class CoinsManager {
     public async add(amount: number): Promise<number> {
         if (amount < 0 || amount > MAX_AMOUNT) throw new RangeError('Amount must be between 0 and 9 hundred-trillion.');
 
-        const res = await this.client._request('POST', '/api/addcoins', { id: this.user.username, amount });
+        const res = await this.client._request('PATCH', '/api/addcoins', { id: this.user.username, coins: amount });
         if (res['status'] !== 'success') throw new Error(res['status']);
 
         this.amount += amount;
@@ -95,7 +95,7 @@ class CoinsManager {
         amount = this.amount - amount;
         if (amount < 0) amount = 0;
 
-        const res = await this.client._request('POST', '/api/setcoins', { id: this.user.username, amount });
+        const res = await this.client._request('POST', '/api/setcoins', { id: this.user.username, coins: amount });
         if (res['status'] !== 'success') throw new Error();
 
         this.amount = amount;
@@ -111,7 +111,7 @@ class CoinsManager {
     public async set(amount: number): Promise<number> {
         if (amount < 0 || amount > MAX_AMOUNT) throw new RangeError('Amount must be between 0 and 9 hundred-trillion.');
 
-        const res = await this.client._request('POST', '/api/setcoins', { id: this.user.username, amount });
+        const res = await this.client._request('POST', '/api/setcoins', { id: this.user.username, coins: amount });
         if (res['status'] !== 'success') throw new Error(res['status']);
 
         this.amount = amount;
@@ -173,8 +173,8 @@ class ResourceManager {
         if (servers < 0 || servers > 10) throw new RangeError('Servers must be between 0 and 10.');
 
         const res = await this.client._request(
-            'POST', '/api/setresources',
-            { id: this.user.username, ram, disk, cpu, servers }
+            'PATCH', `/api/users/${this.user.username}/resources`,
+            { ram, disk, cpu, servers }
         );
         if (res['status'] !== 'success') throw new Error(res['status']);
 
@@ -188,7 +188,7 @@ class ResourceManager {
      * @returns {Promise<boolean>}
      */
     public async setPlan(plan?: string): Promise<boolean> {
-        const res = await this.client._request('POST', '/api/setplan', { id: this.user.username, package: plan ?? null });
+        const res = await this.client._request('PATCH', `/api/users/${this.user.username}/plan`, { package: plan });
         if (res['status'] !== 'success') throw new Error(res['status']);
         return true;
     }
