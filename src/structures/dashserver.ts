@@ -1,5 +1,5 @@
 import { Dashactyl } from '..';
-import { DashUser } from './dashuser';
+import { DashUser } from './DashUser';
 
 /**
  * Represents a Pterodactyl server.
