@@ -70,19 +70,6 @@ class DashServer {
         }
         return this.owner;
     }
-
-    /*
-    Removed until umplemented in the Dashactyl API
-
-    public async delete(): Promise<void> {
-        if (!this.owner) {
-            const u = this.getOwner();
-            if (!u) throw new Error('Server owner could not be resolved.');
-        }
-        const res = await this.client._request('DELETE', `/api/deleteserver/${this.owner.id}/${this.id}`);
-        if (res['status'] != 'success') throw new Error();
-    }
-    */
 }
 
 export { DashServer };
