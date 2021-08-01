@@ -8,6 +8,7 @@ export class Coupon {
     public disk: number;
     public cpu: number;
     public servers: number;
+    public expiresAt: Date | null;
 
     constructor(data: object) {
         this.code = data['code'];
@@ -16,5 +17,6 @@ export class Coupon {
         this.disk = data['disk'];
         this.cpu = data['cpu']
         this.servers = data['servers'];
+        this.expiresAt = data['expires'] ? new Date(data['expires']) : null;
     }
 }
