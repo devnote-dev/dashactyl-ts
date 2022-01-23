@@ -16,7 +16,7 @@ export default class DashUserManager {
 
             for (const o of data) {
                 const u = new DashUser(this.client, o);
-                res.set(u.id, u);
+                res.set(u.panelId, u);
             }
 
             for (const [k, v] of res.entries()) this.cache.set(k, v);
@@ -24,7 +24,13 @@ export default class DashUserManager {
         }
 
         const u = new DashUser(this.client, data);
-        this.cache.set(u.id, u);
+        this.cache.set(u.panelId, u);
         return u;
+    }
+
+    public async fetch(id: number, force: boolean = false): Promise<DashUser> {
+        if (!force && this.cache.has(id)) return this.cache.get(id);
+        const data = await this.client._get(`users/${id}`);
+        return this._add(data) as DashUser;
     }
 }
