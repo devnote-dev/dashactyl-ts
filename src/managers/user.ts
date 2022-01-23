@@ -30,7 +30,7 @@ export default class DashUserManager {
 
     public async fetch(id: number, force: boolean = false): Promise<DashUser> {
         if (!force && this.cache.has(id)) return this.cache.get(id);
-        const data = await this.client._get(`users/${id}`);
+        const data = await this.client._get(`/users/${id}`);
         return this._add(data) as DashUser;
     }
 }

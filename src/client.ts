@@ -30,7 +30,7 @@ export default class Client {
         if (!['GET', 'POST', 'PATCH', 'PUT', 'DELETE'].includes(method))
             throw new SyntaxError('Invalid API request method.');
 
-        path = `${this.domain}/api/${path}`;
+        path = `${this.domain}/api${path}`;
         const body = data ? JSON.stringify(data) : undefined;
 
         const res = await fetch(path, {
@@ -70,7 +70,7 @@ export default class Client {
 
     public async getPing() {
         const start = Date.now();
-        await this._get('/api');
+        await this._get('/');
 
         this.ping = Date.now() - start;
         return this.ping;
