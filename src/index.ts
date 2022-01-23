@@ -5,5 +5,3 @@ export * from './interfaces';
 export * from './managers/coupon';
 export * from './managers/store';
 export * from './managers/user';
-
-export * from './structures/user';
