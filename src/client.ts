@@ -32,6 +32,7 @@ export default class Client {
 
         path = `${this.domain}/api${path}`;
         const body = data ? JSON.stringify(data) : undefined;
+        const start = Date.now();
 
         const res = await fetch(path, {
             method, body,
@@ -40,6 +41,7 @@ export default class Client {
                 'Authorization': this.auth
             }
         });
+        this.ping = Date.now() - start;
 
         if (res.status >= 500) throw new RequestError(res.statusText, res.status, path);
         const json: APIResponse = await res.json();
@@ -66,13 +68,5 @@ export default class Client {
 
     public async _delete(path: string): Promise<void> {
         this._request('DELETE', path);
-    }
-
-    public async getPing() {
-        const start = Date.now();
-        await this._get('/');
-
-        this.ping = Date.now() - start;
-        return this.ping;
     }
 }
