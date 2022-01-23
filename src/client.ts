@@ -30,12 +30,15 @@ export default class Client {
         if (!['GET', 'POST', 'PATCH', 'PUT', 'DELETE'].includes(method))
             throw new SyntaxError('Invalid API request method.');
 
-        path = this.domain + path;
+        path = `${this.domain}/api/${path}`;
         const body = data ? JSON.stringify(data) : undefined;
 
         const res = await fetch(path, {
             method, body,
-            headers:{ 'Authorization': this.auth }
+            headers:{
+                'Content-Type': 'application/json',
+                'Authorization': this.auth
+            }
         });
 
         if (res.status >= 500) throw new RequestError(res.statusText, res.status, path);
