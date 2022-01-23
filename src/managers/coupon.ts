@@ -53,4 +53,10 @@ export default class CouponManager {
         });
         return this.cache.get(data.code);
     }
+
+    public async fetch(code?: string, force: boolean = false) {
+        if (code && !force && this.cache.has(code)) return this.cache.get(code);
+        const data = await this.client._get(`/coupons${code ? '/'+ code : ''}`);
+        return this._add(data);
+    }
 }
