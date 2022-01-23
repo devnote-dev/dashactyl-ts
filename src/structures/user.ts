@@ -3,7 +3,6 @@ import type Client from '../client';
 
 export default class DashUser {
     public readonly client:    Client;
-    public readonly id:        number;
     public readonly panelId:   number;
     public readonly createdAt: Date;
     public username:   string;
@@ -17,7 +16,6 @@ export default class DashUser {
 
     constructor(client: Client, data: any) {
         this.client = client;
-        this.id = data.id;
         this.panelId = data.panel_id;
         this.createdAt = new Date(data.created_at);
 
