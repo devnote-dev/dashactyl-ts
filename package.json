@@ -1,10 +1,14 @@
 {
-  "name": "typedash",
+  "name": "dashactyl-ts",
   "version": "1.0.4",
   "description": "A flexible API wrapper for Dashactyl in TypeScript",
-  "main": "index.js",
+  "main": "dist/src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "github:devnote-dev/dashactyl-ts"
   },
   "keywords": [
     "dashactyl",
@@ -13,9 +17,6 @@
     "pterodactyl"
   ],
   "author": "Devonte <https://github.com/devnote-dev>",
-  "repository": {
-    "type": "git",
-    "url": "github:devnote-dev/typedash"
-  },
-  "license": "MIT"
+  "license": "MIT",
+  "homepage": "https://github.com/PteroPackages/PteroJS#readme"
 }
