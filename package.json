@@ -18,5 +18,8 @@
   ],
   "author": "Devonte <https://github.com/devnote-dev>",
   "license": "MIT",
-  "homepage": "https://github.com/PteroPackages/PteroJS#readme"
+  "homepage": "https://github.com/devnote-dev/dashactyl-ts#readme",
+  "dependencies": {
+    "ky": "^0.28.7"
+  }
 }
